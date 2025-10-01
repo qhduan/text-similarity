@@ -138,7 +138,7 @@ ts = TextSimilarity()
 
 # 计算相似度
 similarity = ts.calculate_similarity("机器学习", "深度学习")
-print(f"相似度: {similarity:.4f}")  # 输出: 0.85+
+print(f"相似度: {similarity:.4f}")  # 输出: 0.85+（为参考值，具体以输出实际输出为准）
 ```
 
 ## 使用方法
@@ -195,7 +195,7 @@ similarity_matrix = ts.get_similarity_matrix(texts)
 print(f"相似度矩阵形状: {similarity_matrix.shape}")  # 输出: (4, 4)
 print(similarity_matrix)
 
-# 矩阵示例输出（对称矩阵，对角线为1.0）:
+# 矩阵示例输出（对称矩阵，对角线为1.0）（以下为参考值，具体以输出实际输出为准）:
 # [[1.00, 0.85, 0.78, 0.72],
 #  [0.85, 1.00, 0.80, 0.75],
 #  [0.78, 0.80, 1.00, 0.70],
