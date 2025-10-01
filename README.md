@@ -27,6 +27,107 @@ pip install -r requirements.txt
 - torch >= 1.9.0
 - numpy >= 1.19.0
 
+## 云端服务选择：阿里云百炼API
+
+除了本地模型，本包还提供基于**阿里云百炼Embedding API**的云端服务版本，可以大幅减少本地依赖和模型下载。
+
+### 云端服务的优势
+
+- ✅ **更少的依赖**: 无需安装PyTorch、Transformers等大型库
+- ✅ **无需下载模型**: 不需要下载1.2GB的本地模型文件
+- ✅ **即开即用**: 设置API Token后立即可用
+- ✅ **支持异步**: 提供async接口，适合高并发场景
+- ✅ **功能完整**: 支持所有本地版本的功能
+
+### 云端服务安装
+
+```bash
+# 仅需安装最小依赖
+pip install numpy scikit-learn aiohttp
+```
+
+### 云端服务快速开始
+
+```python
+from text_similarity import TextSimilarityBailian
+
+# 设置环境变量
+# export BAILIAN_TOKEN='your-api-token'
+
+# 初始化（使用阿里云百炼API）
+ts = TextSimilarityBailian()
+
+# 计算相似度（API调用，无需本地模型）
+similarity = ts.calculate_similarity("机器学习", "深度学习")
+print(f"相似度: {similarity:.4f}")
+```
+
+### 获取API Token
+
+1. 访问[阿里云百炼平台](https://bailian.console.aliyun.com/)
+2. 注册并创建API密钥
+3. 设置环境变量：`export BAILIAN_TOKEN='your-api-token'`
+
+### 云端服务 vs 本地模型
+
+| 特性 | 本地模型 (TextSimilarity) | 云端服务 (TextSimilarityBailian) |
+|------|---------------------------|----------------------------------|
+| 依赖大小 | 约2-3GB | 约10MB |
+| 首次启动 | 需下载模型 | 无需下载 |
+| 运行环境 | 需要GPU/CPU资源 | 仅需网络连接 |
+| 成本 | 一次性安装 | 按API调用计费 |
+| 隐私性 | 数据本地处理 | 数据上传到云端 |
+| 异步支持 | 否 | 是 |
+
+**推荐使用场景：**
+- **本地模型**: 需要离线使用、处理敏感数据、有GPU资源、大批量处理
+- **云端服务**: 快速开发、轻量级部署、不想安装大型依赖、高并发场景
+
+### 云端服务完整示例
+
+详见 `test_bailian.py` 文件，包含所有功能的测试示例：
+
+```python
+from text_similarity import TextSimilarityBailian
+
+ts = TextSimilarityBailian()
+
+# 1. 相似度计算
+similarity = ts.calculate_similarity("你好世界", "你好中国")
+
+# 2. 文本向量化
+texts = ["机器学习", "深度学习", "人工智能"]
+vectors = ts.get_vectors(texts)
+
+# 3. 相似度矩阵
+matrix = ts.get_similarity_matrix(texts)
+
+# 4. 查找最相似文本
+query = "机器学习算法"
+candidates = ["深度学习", "云计算", "人工智能"]
+results = ts.find_most_similar(query, candidates, top_k=2)
+
+# 5. 文本去重
+texts = ["文本1", "文本2", "相似文本1", ...]
+kept_indices = ts.deduplicate_texts(texts, keep_count=5, similarity_threshold=0.85)
+
+# 6. 异步接口（推荐用于高并发）
+import asyncio
+
+async def process():
+    similarity = await ts.calculate_similarity_async("文本1", "文本2")
+    vectors = await ts.get_vectors_async(["文本1", "文本2", "文本3"])
+    return similarity, vectors
+
+results = asyncio.run(process())
+```
+
+运行测试：
+```bash
+export BAILIAN_TOKEN='your-api-token'
+python test_bailian.py
+```
+
 ## 快速开始
 
 ```python
